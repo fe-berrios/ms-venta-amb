@@ -1,8 +1,10 @@
 package bo.felipe.app.client;
 
+import bo.felipe.app.model.StatusResponse;
 import bo.felipe.app.model.VentaRequest;
 import bo.felipe.app.model.VentaResponse;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -14,5 +16,10 @@ public interface IWebpayClient {
     VentaResponse addVenta(@RequestHeader("Tbk-Api-Key-Id") String apiKeyId,
                            @RequestHeader("Tbk-Api-Key-Secret") String apiKeySecret,
                            @RequestBody VentaRequest venta);
+
+    @PostMapping(path = "/rswebpaytransaction/api/webpay/v1.2/transactions/{token}")
+    StatusResponse getStatus(@RequestHeader("Tbk-Api-Key-Id") String apiKeyId,
+                             @RequestHeader("Tbk-Api-Key-Secret") String apiKeySecret,
+                             @PathVariable String token);
 
 }

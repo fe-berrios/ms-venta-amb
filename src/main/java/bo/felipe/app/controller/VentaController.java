@@ -18,6 +18,9 @@ public class VentaController {
 
     @PostMapping("/add/venta")
     public VentaResponse addVenta(@RequestBody VentaRequest venta){
+
+        System.out.println(ventaService.addVenta(venta));
+
         return ventaService.addVenta(venta);
     }
 
