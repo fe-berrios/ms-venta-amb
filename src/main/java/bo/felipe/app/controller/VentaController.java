@@ -22,9 +22,9 @@ public class VentaController {
         return ventaService.addVenta(venta);
     }
 
-    @PutMapping("/get/venta/{token}")
-    public StatusResponse getVenta(@PathVariable String token){
-        return ventaService.getStatus();
+    @PutMapping("/status/venta/{id}")
+    public StatusResponse confirmVenta(@PathVariable("id") Long id){
+        return ventaService.confirmVenta(id);
     }
 
 }
