@@ -33,8 +33,8 @@ public class StatusResponse {
     @JsonProperty("payment_type_code")
     private String paymentTypeCode;
     @JsonProperty("response_code")
-    private int responseCode;
+    private Integer responseCode;
     @JsonProperty("installments_number")
-    private int installmentsNumber;
+    private Integer installmentsNumber;
 
 }

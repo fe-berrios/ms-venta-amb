@@ -2,12 +2,11 @@ package bo.felipe.app.service;
 
 import bo.felipe.app.client.IDatabaseC;
 import bo.felipe.app.client.IWebpayClient;
-import bo.felipe.app.model.StatusResponse;
-import bo.felipe.app.model.VentaRequest;
-import bo.felipe.app.model.VentaResponse;
+import bo.felipe.app.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Service
 public class VentaService {
@@ -30,25 +29,39 @@ public class VentaService {
     }
 
     // Confirmar una transacción
-    public StatusResponse confirmVenta(Long id){
+    public StatusResponse confirmVenta(String token_ws){
+        StatusResponse statusVenta = iWebpayClient.confirmVenta(apiKeyId, apiKeySecret, token_ws);
+        Venta venta = iDatabaseC.getVentaByBO(statusVenta.getBuyOrder());
 
-        VentaResponse venta = iDatabaseC.getVenta(id);
-        String token = venta.getToken();
+        venta.setStatus(statusVenta.getStatus());
+        venta.setAuthorizationCode(statusVenta.getAuthorizationCode());
 
-        return iWebpayClient.confirmVenta(apiKeyId, apiKeySecret, token);
+        iDatabaseC.updateStatusVenta(statusVenta.getBuyOrder(), venta);
+        return statusVenta;
     }
 
     // Obtener estado de una transacción
-    public StatusResponse getStatus(){
+    public StatusResponse getStatusVenta(String buy_order){
 
-        String apiKeyId = "597055555532";
-        String apiKeySecret = "579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C";
-
-        return iWebpayClient.getStatus(apiKeyId, apiKeySecret, "token");
+        Venta venta = iDatabaseC.getVentaByBO(buy_order);
+        return iWebpayClient.getStatus(apiKeyId, apiKeySecret, venta.getToken());
     }
 
     // Reversar o Anular un pago
 
+
+
     // Capturar una transacción
+    public CaptureResponse captureResponse(@PathVariable("token")String token){
+
+        Venta venta = iDatabaseC.getVentaByToken(token);
+        CaptureRequest captureRequest = new CaptureRequest();
+
+        captureRequest.setBuy_order(venta.getBuyOrder());
+        captureRequest.setAuthorizationCode(venta.getAuthorizationCode());
+        captureRequest.setCaptureAmount(venta.getAmount());
+
+        return iWebpayClient.captureVenta(apiKeyId, apiKeySecret, token, captureRequest);
+    }
 
 }

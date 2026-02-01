@@ -1,8 +1,6 @@
 package bo.felipe.app.client;
 
-import bo.felipe.app.model.StatusResponse;
-import bo.felipe.app.model.VentaRequest;
-import bo.felipe.app.model.VentaResponse;
+import bo.felipe.app.model.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +20,7 @@ public interface IWebpayClient {
                              @PathVariable String token);
 
     // Obtener estado de una transacción
-    @PostMapping(path = "/rswebpaytransaction/api/webpay/v1.2/transactions/{token}")
+    @GetMapping(path = "/rswebpaytransaction/api/webpay/v1.2/transactions/{token}")
     StatusResponse getStatus(@RequestHeader("Tbk-Api-Key-Id") String apiKeyId,
                              @RequestHeader("Tbk-Api-Key-Secret") String apiKeySecret,
                              @PathVariable String token);
@@ -30,5 +28,11 @@ public interface IWebpayClient {
     // Reversar o Anular un pago
 
     // Capturar una transacción
+    @PutMapping(path = "/rswebpaytransaction/api/webpay/v1.2/transactions/{token}/capture")
+    CaptureResponse captureVenta(@RequestHeader("Tbk-Api-Key-Id") String apiKeyId,
+                                 @RequestHeader("Tbk-Api-Key-Secret") String apiKeySecret,
+                                 @PathVariable String token,
+                                 @RequestBody CaptureRequest capture);
+
 
 }
