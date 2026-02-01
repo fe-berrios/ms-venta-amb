@@ -26,6 +26,11 @@ public interface IWebpayClient {
                              @PathVariable String token);
 
     // Reversar o Anular un pago
+    @PostMapping(path = "/rswebpaytransaction/api/webpay/v1.2/transactions/{token}/refunds")
+    RefundResponse refundVenta(@RequestHeader("Tbk-Api-Key-Id") String apiKeyId,
+                               @RequestHeader("Tbk-Api-Key-Secret") String apiKeySecret,
+                               @PathVariable String token,
+                               @RequestBody RefundRequest request);
 
     // Capturar una transacción
     @PutMapping(path = "/rswebpaytransaction/api/webpay/v1.2/transactions/{token}/capture")

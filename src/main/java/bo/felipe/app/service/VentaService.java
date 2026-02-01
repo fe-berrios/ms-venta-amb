@@ -21,6 +21,8 @@ public class VentaService {
     String apiKeySecret;
     @Value("${api.key.id}")
     String apiKeyId;
+    @Value("${api.key.id.capture}")
+    String apiKeyIdCapture;
 
     // Crear una transacción
     public VentaResponse addVenta(VentaRequest venta){
@@ -48,20 +50,14 @@ public class VentaService {
     }
 
     // Reversar o Anular un pago
-
+    public RefundResponse refundVenta(String token, RefundRequest refund){
+        return iWebpayClient.refundVenta(apiKeyId, apiKeySecret, token, refund);
+    }
 
 
     // Capturar una transacción
-    public CaptureResponse captureResponse(@PathVariable("token")String token){
-
-        Venta venta = iDatabaseC.getVentaByToken(token);
-        CaptureRequest captureRequest = new CaptureRequest();
-
-        captureRequest.setBuy_order(venta.getBuyOrder());
-        captureRequest.setAuthorizationCode(venta.getAuthorizationCode());
-        captureRequest.setCaptureAmount(venta.getAmount());
-
-        return iWebpayClient.captureVenta(apiKeyId, apiKeySecret, token, captureRequest);
+    public CaptureResponse captureResponse(String token, CaptureRequest captureRequest){
+        return iWebpayClient.captureVenta(apiKeyIdCapture, apiKeySecret, token, captureRequest);
     }
 
 }
